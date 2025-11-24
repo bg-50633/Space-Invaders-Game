@@ -6,7 +6,9 @@
 class Player
 {
 private:
+    // What type is more suited for name?
     wchar_t name[SCREEN_WIDTH / 2];
+    // Why is nameEntered needed? Do functions releated to this need to exist?
     bool nameEntered;
     int score;
     int lives;
@@ -14,8 +16,10 @@ private:
 
 public:
     // Constructor
-    Player();
+    // throw exception if name not valid
+    Player(std::string name);
 
+    // If we need destructor, what else do we need?
     // Destructor
     ~Player();
 
@@ -23,6 +27,7 @@ public:
     const wchar_t* getName();
 
     // Set Player Name
+    // How many times do we need to set player name, is there a better place to do it?
     void setName(const std::string& name_str);
 
     // Get nameEntered flag
@@ -32,13 +37,13 @@ public:
     void setNameEnteredFlag(const bool flag);
 
     // Get Player Score
-    const int getScore();
+    int getScore() ;
 
     // Update Player Score
     void updateScore(const int n);
 
     // Get Player Lives
-    const int getLives();
+    int getLives() const;
 
     // Update Player Lives
     void updateLives(const int n);

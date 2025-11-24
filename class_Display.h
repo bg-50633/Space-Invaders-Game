@@ -6,15 +6,21 @@
 
 #include "class_Player.h"
 
+// Should this be called Display if it sepecialized for the game?
 class Display
 {
 private:
+    // what else can we use instead of raw pointer
+    // Smart pointer? unique_ptr, shared_ptr?   
     wchar_t* screen;
     HANDLE hConsole;
     DWORD dwBytesWritten;
 
 public:
     // Constructor
+    // Why doesn't display get constructed with dimensions?
+    // What if I want display of 100x200?
+    // Rule of 3, 5?
     Display();
 
     // Destructor

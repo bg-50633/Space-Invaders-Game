@@ -13,6 +13,15 @@
 #include "class_Player.h"
 #include "class_Display.h"
 
+// General comments
+// Const not used enough
+// What is the difference between
+// 1. const bool myFunction()
+// 2. bool myFunction() const
+
+// noexcept not used enough
+// what is the point of noexcept
+
 int main()
 {
     // Initialize variables ////////////////////////////////////////////////
@@ -25,13 +34,27 @@ int main()
     Position2DVector playerBullets;
 
     // Create enemies object & enemyBullets object
-    Position2DVector enemies;
+    Position2DVector enemies{{1,2}, {2,3}, {1,2}}; 
     Position2DVector enemyBullets;
 
     // Initialize random number generator
     std::random_device rand_dev;
     std::mt19937 generator(rand_dev());
     std::uniform_int_distribution<int> distribution(1, 100);
+
+    // What is a reasanable lenght of a method?
+
+    // init Display
+    // Init Game
+    // is everything ready?
+    // while(1)
+        // is game over?
+        // Turn
+        // update game state
+        // display
+
+
+
 
     // Initialize keyboard input variables
     bool bKeyLeft = FALSE;
@@ -75,6 +98,7 @@ int main()
         auto startTime = std::chrono::system_clock::now();
         while ((std::chrono::system_clock::now() - startTime) < timeDelay)
         {
+            // Can we have nicer way to get what key was pressed?
             bKeyRight = (0x8000 & GetAsyncKeyState((unsigned char)('\x27'))) != 0;
             bKeyLeft = (0x8000 & GetAsyncKeyState((unsigned char)('\x25'))) != 0;
             bKeySpace = (0x8000 & GetAsyncKeyState((unsigned char)('\x20'))) != 0;
@@ -99,9 +123,10 @@ int main()
         }
 
         // Game Logic //////////////////////////////////////////////////////////
+        // Why is all of game logic in main?
 
         // Local variables
-        Position2D temp{};
+        Position2D temp{}; // why does temp exist?
         Position2D borderEnemy{};
 
         // Move Player Bullets
@@ -254,7 +279,7 @@ int main()
         display.updatePositionVector(playerBullets, L'.');
 
         // Draw Enemy Bullets
-        display.updatePositionVector(enemyBullets, L'°');
+        display.updatePositionVector(enemyBullets, L'ï¿½');
 
         // Draw Enemies
         display.updatePositionVector(enemies, L'Y');

@@ -7,6 +7,13 @@
 
 #include "data_structures.h"
 
+using Position2DVector = std::vector<Position2D>
+
+addPostion(int x, int y, Position2DVector& ref); 
+posVec.insert({1,2});
+posVec.insert(Position2D(1,2));
+
+// What is the point of Position 2D vecotr class?
 class Position2DVector {
 private:
     std::vector<Position2D> positions;

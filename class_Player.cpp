@@ -22,8 +22,9 @@ const wchar_t* Player::getName()
 }
 
 // Set Player Name
-void Player::setName(const std::string& name_str)
+void Player::setName(std::string& name_str)
 {
+    // A lot of copying
     std::wstring name_wstr(name_str.begin(), name_str.end());
     std::copy(name_wstr.begin(), name_wstr.end(), name);
     name[name_wstr.length()] = L'\0';

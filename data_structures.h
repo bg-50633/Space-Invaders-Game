@@ -1,8 +1,12 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
+// Is data_structures good name? What does it tell us?
+
+// Should width and height be here?
 #define SCREEN_WIDTH 50
 #define SCREEN_HEIGHT 50
+
 
 enum MovementDirection
 {
@@ -12,6 +16,7 @@ enum MovementDirection
     MOVE_RIGHT
 };
 
+// Is there a std::cpp class that we can use instead?
 struct Position2D
 {
     int x;

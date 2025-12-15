@@ -20,23 +20,22 @@ public:
     // Destructor
     ~Display();
 
-    // Clear Screen
-    void clearScreen();
-
     // Draw Game Border
-    void updateGameBorder();
+    void drawGameBorder();
 
     // Draw Player Interface
-    void updatePlayerInterface(Player& player);
+    void drawPlayerInterface(Player& player);
 
     // Draw character to a position
-    void updatePosition(const Position2D& position, const wchar_t wc);
+    void drawCharToPosition(const Position2D& position, const wchar_t wc);
+
+    void drawCharToPosition(int x, int y, const wchar_t wc);
 
     // Draw character to all positions in a vector
-    void updatePositionVector(Position2DVector& posVec, const wchar_t wc);
+    void drawCharToPositionsInVector(Position2DVector& posVec, const wchar_t wc);
 
-    // Update Frame
-    void updateFrame();
+    // Draw Frame
+    void drawFrame();
 
 };
 

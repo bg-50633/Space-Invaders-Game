@@ -1,50 +1,54 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <string>
+
 #include "class_Position2DVector.h"
 
 class Player
 {
 private:
-    wchar_t name[SCREEN_WIDTH / 2];
-    bool nameEntered;
-    int score;
-    int lives;
-    Position2D position;
+    std::string name = "Player";
+    int score = 0;
+    int lives = 3;
+    Position2D position{};
 
 public:
-    // Constructor
+    // Default constructor
     Player();
 
+    // Parametrized constructor
+    Player(const std::string& str, int s, int l, int pX, int pY);
+
+    // Copy constructor
+    Player(const Player& other);
+
+    // Copy assignment operator
+    Player& operator=(const Player& other);
+
     // Destructor
-    ~Player();
+    ~Player() noexcept;
 
     // Get Player Name
-    const wchar_t* getName();
+    const std::string getName() noexcept;
 
     // Set Player Name
     void setName(const std::string& name_str);
 
-    // Get nameEntered flag
-    const bool isNameEntered();
-
-    // Set nameEntered flag
-    void setNameEnteredFlag(const bool flag);
-
     // Get Player Score
-    const int getScore();
+    const int getScore() noexcept;
 
     // Update Player Score
     void updateScore(const int n);
 
     // Get Player Lives
-    const int getLives();
+    const int getLives() noexcept;
 
     // Update Player Lives
     void updateLives(const int n);
 
     // Get Player Position
-    const Position2D getPosition();
+    const Position2D getPosition() noexcept;
 
     // Set Player Position
     void setPosition(const MovementDirection& movDir);

@@ -13,14 +13,8 @@ Display::Display()
 // Destructor
 Display::~Display() {};
 
-// Clear Screen
-void Display::clearScreen()
-{
-    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) screen[i] = L' ';
-}
-
 // Draw Game Border
-void Display::updateGameBorder()
+void Display::drawGameBorder()
 {
     for (int i = 0; i < SCREEN_WIDTH; i++)
     {
@@ -28,49 +22,54 @@ void Display::updateGameBorder()
         {
             if ((j == 0) || (j == SCREEN_HEIGHT - 1))
             {
-                screen[i * SCREEN_WIDTH + j] = L'|';
+                drawCharToPosition(j, i, L'|');
             }
             else if ((i == 0) || (i == 3))
             {
-                screen[i * SCREEN_WIDTH + j] = L'#';
+                drawCharToPosition(j, i, L'#');
             }
             else if ((i == SCREEN_WIDTH - 1))
             {
-                screen[i * SCREEN_WIDTH + j] = L'_';
+                drawCharToPosition(j, i, L'_');
+            }
+            else
+            {
+                drawCharToPosition(j, i, L' ');
             }
         }
     }
 }
 
 // Draw Player Interface
-void Display::updatePlayerInterface(Player& player)
+void Display::drawPlayerInterface(Player& player)
 {
-
-    wsprintf(&screen[SCREEN_WIDTH + 1], L"Player: %ws", player.getName());
+    wsprintf(&screen[SCREEN_WIDTH + 1], L"Player:");
     wsprintf(&screen[SCREEN_WIDTH + SCREEN_WIDTH - 15], L"Score: %d", player.getScore());
     wsprintf(&screen[2 * SCREEN_WIDTH + 1], L"Lives: %d", player.getLives());
 }
 
 // Draw character to a position
-void Display::updatePosition(const Position2D& position, const wchar_t wc)
+void Display::drawCharToPosition(const Position2D& position, const wchar_t wc)
 {
     screen[position.y * SCREEN_WIDTH + position.x] = wc;
 }
 
-// Draw character to all positions in a vector
-void Display::updatePositionVector(Position2DVector& posVec, const wchar_t wc)
+void Display::drawCharToPosition(int x, int y, const wchar_t wc)
 {
-    if (!(posVec.isEmpty()))
+    screen[y * SCREEN_WIDTH + x] = wc;
+}
+
+// Draw character to all positions in a vector
+void Display::drawCharToPositionsInVector(Position2DVector& posVec, const wchar_t wc)
+{
+    for (Position2D pos : posVec.getPosVec())
     {
-        for (size_t i = 0; i < posVec.getVectorSize(); i++)
-        {
-            screen[posVec.getPos(i).y * SCREEN_WIDTH + posVec.getPos(i).x] = wc;
-        }
+        drawCharToPosition(pos, wc);
     }
 }
 
-// Update Frame
-void Display::updateFrame()
+// Draw Frame
+void Display::drawFrame()
 {
     WriteConsoleOutputCharacter(hConsole, screen, SCREEN_WIDTH * SCREEN_HEIGHT, { 0,0 }, &dwBytesWritten);
 }

@@ -21,7 +21,7 @@ int main()
     Display display;
 
     // Create player object & playerBullets object
-    Player player;
+    Player player("Player 1", 0, 3, 25, 48);
     Position2DVector playerBullets;
 
     // Create enemies object & enemyBullets object
@@ -239,28 +239,25 @@ int main()
         }
 
         // Display /////////////////////////////////////////////////////////////
-        
-        // Clear Screen
-        display.clearScreen();
 
         // Update Border & Interface
-        display.updateGameBorder();
-        display.updatePlayerInterface(player);
+        display.drawGameBorder();
+        display.drawPlayerInterface(player);
 
         // Draw Player Ship
-        display.updatePosition(player.getPosition(), L'W');
+        display.drawCharToPosition(player.getPosition(), L'W');
 
         // Draw Player Bullets
-        display.updatePositionVector(playerBullets, L'.');
+        display.drawCharToPositionsInVector(playerBullets, L'.');
 
         // Draw Enemy Bullets
-        display.updatePositionVector(enemyBullets, L'°');
+        display.drawCharToPositionsInVector(enemyBullets, L'°');
 
         // Draw Enemies
-        display.updatePositionVector(enemies, L'Y');
+        display.drawCharToPositionsInVector(enemies, L'Y');
         
         // Display Frame
-        display.updateFrame();
+        display.drawFrame();
     }
     
     return 0;

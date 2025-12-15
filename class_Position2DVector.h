@@ -35,6 +35,9 @@ public:
 
     // Get position by index
     Position2D getPos(size_t index);
+
+    // Get positions vector
+    const std::vector<Position2D> getPosVec();
 };
 
 #endif

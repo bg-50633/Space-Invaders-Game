@@ -1,22 +1,54 @@
 #include "class_Player.h"
 
 
-// Constructor
+// Default constructor
 Player::Player()
 {
-    wcscpy_s(name, L"Player");
-    nameEntered = FALSE;
+    name = "Player";
     score = 0;
     lives = 3;
-    position.x = SCREEN_WIDTH / 2;
-    position.y = SCREEN_HEIGHT - 2;
+    position.x = 0;
+    position.y = 0;
+}
+
+// Parametrized constructor
+Player::Player(const std::string& str, int s, int l, int pX, int pY)
+{
+    name = str;
+    score = s;
+    lives = l;
+    position.x = pX;
+    position.y = pY;
+}
+
+// Copy constructor
+Player::Player(const Player& other)
+{
+    name = other.name;
+    score = other.score;
+    lives = other.lives;
+    position = other.position;
+}
+
+// Copy assignment operator
+Player& Player::operator=(const Player& other)
+{
+    if (this != &other)
+    {
+        name = other.name;
+        score = other.score;
+        lives = other.lives;
+        position.x = other.position.x;
+        position.y = other.position.y;
+    }
+    return *this;
 }
 
 // Destructor
-Player::~Player() {};
+Player::~Player() noexcept {};
 
 // Get Player Name
-const wchar_t* Player::getName()
+const std::string Player::getName() noexcept
 {
     return name;
 }
@@ -24,25 +56,11 @@ const wchar_t* Player::getName()
 // Set Player Name
 void Player::setName(const std::string& name_str)
 {
-    std::wstring name_wstr(name_str.begin(), name_str.end());
-    std::copy(name_wstr.begin(), name_wstr.end(), name);
-    name[name_wstr.length()] = L'\0';
-}
-
-// Get nameEntered flag
-const bool Player::isNameEntered()
-{
-    return nameEntered;
-}
-
-// Set nameEntered flag
-void Player::setNameEnteredFlag(const bool flag)
-{
-    nameEntered = flag;
+    name = name_str;
 }
 
 // Get Player Score
-const int Player::getScore()
+const int Player::getScore() noexcept
 {
     return score;
 }
@@ -54,7 +72,7 @@ void Player::updateScore(const int n)
 }
 
 // Get Player Lives
-const int Player::getLives()
+const int Player::getLives() noexcept
 {
     return lives;
 }
@@ -66,7 +84,7 @@ void Player::updateLives(const int n)
 }
 
 // Get Player Position
-const Position2D Player::getPosition()
+const Position2D Player::getPosition() noexcept
 {
     return position;
 }

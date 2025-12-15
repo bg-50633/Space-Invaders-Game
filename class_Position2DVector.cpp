@@ -94,3 +94,9 @@ Position2D Position2DVector::getPos(size_t index)
     }
     throw std::out_of_range("Invalid index");
 }
+
+// Get positions vector
+const std::vector<Position2D> Position2DVector::getPosVec()
+{
+    return positions;
+}

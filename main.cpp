@@ -1,275 +1,100 @@
-#include <iostream>
-#include <chrono>
-#include <vector>
-#include <random>
-#include <string>
-#include <limits>
+#include "Display.h"
+#include "GameLogic.h"
 
-#include <Windows.h>
-#include <WinUser.h>
-
-#include "data_structures.h"
-#include "class_Position2DVector.h"
-#include "class_Player.h"
-#include "class_Display.h"
+constexpr auto SCREEN_WIDTH = 50;
+constexpr auto SCREEN_HEIGHT = 50;
 
 int main()
 {
-    // Initialize variables ////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    // Initialization
+    //////////////////////////////////////////////////////////////////////
 
     // Create display object
-    Display display;
+    Display display(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    // Create player object & playerBullets object
-    Player player("Player 1", 0, 3, 25, 48);
-    Position2DVector playerBullets;
+    // Create GameLogic object
+    GameLogic gameLogic(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    // Create enemies object & enemyBullets object
-    Position2DVector enemies;
-    Position2DVector enemyBullets;
+    // Initialize player
+    gameLogic.playerInit();
+
+    // Set player name from input
+    gameLogic.playerSetName(display.promptPlayerName());
+
+    // Set Enemy initial positions & movement direction
+    gameLogic.enemyVecInit();
 
     // Initialize random number generator
-    std::random_device rand_dev;
-    std::mt19937 generator(rand_dev());
-    std::uniform_int_distribution<int> distribution(1, 100);
+    gameLogic.randomGeneratorInit();
 
-    // Initialize keyboard input variables
-    bool bKeyLeft = FALSE;
-    bool bKeyRight = FALSE;
-    bool bKeyLeftOld = FALSE;
-    bool bKeyRightOld = FALSE;
-    bool bKeySpace = FALSE;
-    bool bKeySpaceOld = FALSE;
-    std::chrono::milliseconds timeDelay(100);
-
-    // Set Enemy initial positions
-    enemies.addPos(15, 15);
-    enemies.addPos(14, 14);
-    enemies.addPos(16, 14);
-    enemies.addPos(15, 13);
-    enemies.addPos(13, 13);
-    enemies.addPos(17, 13);
-
-    enemies.addPos(25, 15);
-    enemies.addPos(24, 14);
-    enemies.addPos(26, 14);
-    enemies.addPos(25, 13);
-    enemies.addPos(23, 13);
-    enemies.addPos(27, 13);
-
-    enemies.addPos(35, 15);
-    enemies.addPos(34, 14);
-    enemies.addPos(36, 14);
-    enemies.addPos(35, 13);
-    enemies.addPos(33, 13);
-    enemies.addPos(37, 13);
-
-    // Set Enemy initial movement direction
-    enum MovementDirection enemyMovementDirection = MOVE_LEFT;
-
+    //////////////////////////////////////////////////////////////////////
     // Game Loop
+    //////////////////////////////////////////////////////////////////////
     
     while (TRUE)
     {
-        // Get Player Input
-        auto startTime = std::chrono::system_clock::now();
-        while ((std::chrono::system_clock::now() - startTime) < timeDelay)
-        {
-            bKeyRight = (0x8000 & GetAsyncKeyState((unsigned char)('\x27'))) != 0;
-            bKeyLeft = (0x8000 & GetAsyncKeyState((unsigned char)('\x25'))) != 0;
-            bKeySpace = (0x8000 & GetAsyncKeyState((unsigned char)('\x20'))) != 0;
-
-            if (bKeyRight && !bKeyRightOld)
-            {
-                player.setPosition(MOVE_RIGHT);
-            }
-            if (bKeyLeft && !bKeyLeftOld)
-            {
-                player.setPosition(MOVE_LEFT);
-            }
-
-            if (bKeySpace && !bKeySpaceOld)
-            {
-                playerBullets.addPos(player.getPosition());
-            }
-
-            bKeyRightOld = bKeyRight;
-            bKeyLeftOld = bKeyLeft;
-            bKeySpaceOld = bKeySpace;
-        }
-
-        // Game Logic //////////////////////////////////////////////////////////
-
-        // Local variables
-        Position2D temp{};
-        Position2D borderEnemy{};
+        // Get Player Keyboard Input
+        gameLogic.getKeyboardInput();
 
         // Move Player Bullets
-        for (size_t i = 0; i < playerBullets.getVectorSize(); i++)
-        {
-            temp = playerBullets.getPos(i);
-            if (temp.y <= 4)
-            {
-                playerBullets.removePos(temp);
-            }
-            else
-            {
-                playerBullets.updatePos(i, MOVE_UP);
-            }
-        }
+        gameLogic.pBulletsMove();
 
         // Spawn Enemy Bullets
-        for (size_t i = 0; i < enemies.getVectorSize(); i++)
-        {
-            temp = enemies.getPos(i);
-            int random_number = distribution(generator);
-            if (random_number <= 1) 
-            {
-                enemyBullets.addPos(temp);
-            }
-        }
+        gameLogic.eBulletsSpawn();
 
         // Move Enemy Bullets
-        for (size_t i = 0; i < enemyBullets.getVectorSize(); i++)
-        {
-            temp = enemyBullets.getPos(i);
-            if (temp.y >= SCREEN_HEIGHT - 2)
-            {
-                enemyBullets.removePos(temp);
-            }
-            else
-            {
-                enemyBullets.updatePos(i, MOVE_DOWN);
-            }
-        }
+        gameLogic.eBulletsMove();
 
         // Move Enemies
-        switch (enemyMovementDirection)
-        {
-            case MOVE_LEFT:
-                // Search for the most LEFT enemy position
-                for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                {
-                    temp = enemies.getPos(i);
-                    if (i == 0)
-                    {
-                        borderEnemy = enemies.getPos(i);
-                    }
-                    else
-                    {
-                        if (temp.x < borderEnemy.x)
-                        {
-                            borderEnemy = temp;
-                        }
-                    }
-                }
-                // Move LEFT if NOT at screen border, else change direction
-                if (borderEnemy.x > 1)
-                {
-                    for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                    {
-                        enemies.updatePos(i, MOVE_LEFT);
-                    }
-                }
-                else 
-                {
-                    enemyMovementDirection = MOVE_RIGHT;
-                    for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                    {
-                        enemies.updatePos(i, MOVE_RIGHT);
-                        enemies.updatePos(i, MOVE_DOWN);
-                    }
-                }
-                break;
-
-            case MOVE_RIGHT:
-                // Search for the most RIGHT enemy position
-                for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                {
-                    temp = enemies.getPos(i);
-                    if (i == 0)
-                    {
-                        borderEnemy = enemies.getPos(i);
-                    }
-                    else
-                    {
-                        if (temp.x > borderEnemy.x)
-                        {
-                            borderEnemy = temp;
-                        }
-                    }
-                }
-                // Move RIGHT if NOT at screen border, else change direction
-                if (borderEnemy.x < SCREEN_WIDTH - 2)
-                {
-                    for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                    {
-                        enemies.updatePos(i, MOVE_RIGHT);
-                    }
-                }
-                else
-                {
-                    enemyMovementDirection = MOVE_LEFT;
-                    for (size_t i = 0; i < enemies.getVectorSize(); i++)
-                    {
-                        enemies.updatePos(i, MOVE_LEFT);
-                        enemies.updatePos(i, MOVE_DOWN);
-                    }
-                }
-                break;
-        }
+        gameLogic.enemyVecMove();
         
         // Player Bullet collision dinamics
-        for (size_t i = 0; i < playerBullets.getVectorSize(); i++) 
-        {
-            temp = playerBullets.getPos(i);
-            if (enemies.isContaining(temp))
-            {
-                playerBullets.removePos(temp);
-                enemies.removePos(temp);
-                player.updateScore(10);
-            }
-        }
+        gameLogic.pBulletsCollisionDynamics();
 
         // Enemy Bullet collision dinamics
-        if (enemyBullets.isContaining(player.getPosition()))
-        {
-            enemyBullets.removePos(player.getPosition());
-            player.updateLives(-1);
-        }
+        gameLogic.eBulletsCollisionDynamics();
 
-        // Display /////////////////////////////////////////////////////////////
+        // Update game state
+        gameLogic.updateGameState();
 
-        // Update Border & Interface
+        //////////////////////////////////////////////////////////////////////
+        // Display
+        //////////////////////////////////////////////////////////////////////
+
+        // Draw Border & Interface
         display.drawGameBorder();
-        display.drawPlayerInterface(player);
+        display.drawPlayerInterface(gameLogic.playerGetInfo());
 
         // Draw Player Ship
-        display.drawCharToPosition(player.getPosition(), L'W');
+        display.drawCharToPosition(gameLogic.playerGetPosition(), L'W');
 
         // Draw Player Bullets
-        display.drawCharToPositionsInVector(playerBullets, L'.');
+        display.drawCharToPositionsInVector(gameLogic.pBulletsGetVec(), L'.');
 
         // Draw Enemy Bullets
-        display.drawCharToPositionsInVector(enemyBullets, L'°');
+        display.drawCharToPositionsInVector(gameLogic.eBulletsGetVec(), L'°');
 
         // Draw Enemies
-        display.drawCharToPositionsInVector(enemies, L'Y');
-        
-        // Display Frame
-        display.drawFrame();
+        display.drawCharToPositionsInVector(gameLogic.enemyGetVec(), L'Y');
+
+        // Update Frame
+        display.updateFrame();
+
+        // Write game state message
+        display.writeGameStateMessage(gameLogic.getGameState());
+
+        if (gameLogic.getGameState() != GAME_IN_PROGRESS)
+        {
+            char ch = 0;
+            while ((ch = _getch()) != '\r')
+            {
+                continue;
+            }
+            break;
+        }
+
     }
     
     return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file

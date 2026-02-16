@@ -1,4 +1,4 @@
-#include "class_Position2DVector.h"
+#include "Position2DVector.h"
 
 // Add position coordinates to vector
 void Position2DVector::addPos(int x, int y)

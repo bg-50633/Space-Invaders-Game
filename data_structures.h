@@ -1,8 +1,7 @@
 #ifndef DATA_STRUCTURES_H
 #define DATA_STRUCTURES_H
 
-#define SCREEN_WIDTH 50
-#define SCREEN_HEIGHT 50
+#include <string>
 
 enum MovementDirection
 {
@@ -10,6 +9,14 @@ enum MovementDirection
     MOVE_DOWN,
     MOVE_LEFT,
     MOVE_RIGHT
+};
+
+enum GameState
+{
+    GAME_IN_PROGRESS,
+    PLAYER_WON,
+    PLAYER_HAS_ZERO_LIVES,
+    ENEMIES_REACHED_PLAYER
 };
 
 struct Position2D
@@ -35,6 +42,24 @@ struct Position2D
     // Overload == operator
     bool operator==(const Position2D& other) const {
         return (x == other.x) && (y == other.y);
+    }
+};
+
+struct Player
+{
+    std::wstring name;
+    int score;
+    int lives;
+    Position2D position;
+
+    // Default constructor
+    Player()
+    {
+        name = L"Player";
+        score = 0;
+        lives = 0;
+        position.x = 0;
+        position.y = 0;
     }
 };
 

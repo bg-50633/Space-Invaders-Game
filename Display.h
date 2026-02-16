@@ -2,20 +2,24 @@
 #define DISPLAY_H
 
 #include <Windows.h>
-#include <WinUser.h>
+#include <conio.h>
+#include <cwchar>
 
-#include "class_Player.h"
+#include "data_structures.h"
+#include "Position2DVector.h"
 
 class Display
 {
 private:
-    wchar_t* screen;
+    int screenWidth;
+    int screenHeight;
+    std::unique_ptr<wchar_t[]> screen;
     HANDLE hConsole;
     DWORD dwBytesWritten;
 
 public:
     // Constructor
-    Display();
+    Display(int width, int height);
 
     // Destructor
     ~Display();
@@ -24,18 +28,31 @@ public:
     void drawGameBorder();
 
     // Draw Player Interface
-    void drawPlayerInterface(Player& player);
+    void drawPlayerInterface(const Player& player);
 
     // Draw character to a position
     void drawCharToPosition(const Position2D& position, const wchar_t wc);
 
+    // Draw character to a position from coordinates
     void drawCharToPosition(int x, int y, const wchar_t wc);
 
     // Draw character to all positions in a vector
     void drawCharToPositionsInVector(Position2DVector& posVec, const wchar_t wc);
 
+    // Prompt and read player name from console input
+    std::wstring promptPlayerName();
+
+    // Get display screen pointer value
+    const wchar_t* getScreenRawPointer();
+
+    // Write a string to the screen starting from a specified index
+    void writeString(const wchar_t* str, size_t startIndex = 0);
+
+    // Write game state message
+    void writeGameStateMessage(const GameState& gameState);
+
     // Draw Frame
-    void drawFrame();
+    void updateFrame();
 
 };
 

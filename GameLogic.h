@@ -1,57 +1,136 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef GAME_LOGIC_H
+#define GAME_LOGIC_H
 
-#include <string>
+#include <chrono>
 
-#include "class_Position2DVector.h"
+#include "Position2DVector.h"
+#include "RandomGenerator.h"
 
-class Player
+class GameLogic
 {
 private:
-    std::string name = "Player";
-    int score = 0;
-    int lives = 3;
-    Position2D position{};
+    int screenWidth;
+    int screenHeight;
+    GameState gameState;
+
+    Player player;
+
+    Position2DVector enemyVec;
+    Position2DVector pBulletsVec;
+    Position2DVector eBulletsVec;
+    MovementDirection enemyMovementDirection;
+
+    RandomGenerator randomGenerator;
+
+    bool keyPressedLeft_B;
+    bool keyPressedRight_B;
+    bool keyPressedLeftOld_B;
+    bool keyPressedRightOld_B;
+    bool keyPressedSpace_B;
+    bool keyPressedSpaceOld_B;
+    std::chrono::milliseconds timeDelay;
 
 public:
-    // Default constructor
-    Player();
-
-    // Parametrized constructor
-    Player(const std::string& str, int s, int l, int pX, int pY);
-
-    // Copy constructor
-    Player(const Player& other);
-
-    // Copy assignment operator
-    Player& operator=(const Player& other);
+    // Constructor
+    GameLogic(int width, int height);
 
     // Destructor
-    ~Player() noexcept;
+    ~GameLogic();
+
+    //////////////////////////////////////////////////////////////////////
+    // Player member functions
+    //////////////////////////////////////////////////////////////////////
+    
+    // Initialize Player
+    void playerInit();
 
     // Get Player Name
-    const std::string getName() noexcept;
+    const std::wstring playerGetName() const noexcept;
 
     // Set Player Name
-    void setName(const std::string& name_str);
+    void playerSetName(const std::wstring& name_str);
 
     // Get Player Score
-    const int getScore() noexcept;
+    const int playerGetScore() const noexcept;
 
     // Update Player Score
-    void updateScore(const int n);
+    void playerUpdateScore(const int n);
 
     // Get Player Lives
-    const int getLives() noexcept;
+    const int playerGetLives() const noexcept;
 
     // Update Player Lives
-    void updateLives(const int n);
+    void playerUpdateLives(const int n);
 
     // Get Player Position
-    const Position2D getPosition() noexcept;
+    const Position2D playerGetPosition() const noexcept;
 
     // Set Player Position
-    void setPosition(const MovementDirection& movDir);
+    void playerSetPosition(const MovementDirection& movDir);
+
+    // Get Player info
+    const Player playerGetInfo() noexcept;
+        
+    //////////////////////////////////////////////////////////////////////
+    // pBullets member functions
+    //////////////////////////////////////////////////////////////////////
+
+    // Player bullet shot
+    void pBulletShot();
+
+    // Get pBulletsVec
+    Position2DVector& pBulletsGetVec();
+
+    // Move player bullets
+    void pBulletsMove();
+
+    // Player Bullet collision dinamics
+    void pBulletsCollisionDynamics();
+
+    //////////////////////////////////////////////////////////////////////
+    // enemyVec member functions
+    //////////////////////////////////////////////////////////////////////
+    
+    // Initialize enemyVec positions
+    void enemyVecInit();
+
+    // Get enemyVec
+    Position2DVector& enemyGetVec();
+
+    // Move enemies
+    void enemyVecMove();
+    
+    //////////////////////////////////////////////////////////////////////
+    // eBullets member functions
+    //////////////////////////////////////////////////////////////////////
+    
+    // Spawn enemy bullets
+    void eBulletsSpawn();
+
+    // Get eBulletsVec
+    Position2DVector& eBulletsGetVec();
+
+    // Move enemy bullets
+    void eBulletsMove();
+
+    // Enemy Bullet collision dinamics
+    void eBulletsCollisionDynamics();
+
+    //////////////////////////////////////////////////////////////////////
+    // Other
+    //////////////////////////////////////////////////////////////////////
+    
+    // Random generator initialization
+    void randomGeneratorInit();
+
+    // Get keyboard input
+    void getKeyboardInput();
+
+    // Update game state
+    void updateGameState();
+
+    // Get game state
+    const GameState getGameState() const noexcept;
 
 };
 
